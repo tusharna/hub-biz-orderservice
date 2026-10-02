@@ -3,10 +3,15 @@ node_modules/
 
 # Build
 dist/
+build/
+tmp/
 
 # Environment (never commit secrets)
 .env
 .env.local
+.env.development
+.env.test
+.env.production
 
 # IDE / OS
 .idea/
@@ -17,4 +22,14 @@ dist/
 coverage/
 
 # Logs
+logs
 *.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# temp directory
+.temp
+.tmp
