@@ -1,0 +1,63 @@
+services:
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  order-service:
+    build: .
+    environment:
+      APP_ROLE: order-service
+      PORT: "3000"
+      REDIS_URL: redis://redis:6379
+      OUTBOX_PUBLISHER_ENABLED: "false"
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  payment-service:
+    build: .
+    environment:
+      APP_ROLE: payment-service
+      OUTBOX_PUBLISHER_ENABLED: "false"
+      SERVICE_BUS_CONSUMER_ENABLED: "true"
+      REDIS_URL: redis://redis:6379
+    env_file:
+      - .env
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  notification-service:
+    build: .
+    environment:
+      APP_ROLE: notification-service
+      OUTBOX_PUBLISHER_ENABLED: "false"
+      REDIS_URL: redis://redis:6379
+    env_file:
+      - .env
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  outbox-publisher:
+    build: .
+    environment:
+      APP_ROLE: outbox-publisher
+      OUTBOX_PUBLISHER_ENABLED: "true"
+      SERVICE_BUS_CONSUMER_ENABLED: "false"
+      REDIS_URL: redis://redis:6379
+    env_file:
+      - .env
+    depends_on:
+      redis:
+        condition: service_healthy

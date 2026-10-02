@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Orders</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div>
+        <p class="eyebrow">Azure Service Bus · Cosmos DB</p>
+        <h1>Orders</h1>
+      </div>
+      <div class="health" id="health">
+        <span class="dot" id="health-dot"></span>
+        <span id="health-text">Checking Cosmos…</span>
+      </div>
+    </header>
+
+    <p class="banner" id="banner" hidden></p>
+
+    <main class="grid">
+      <section class="card">
+        <h2>Create an order</h2>
+        <form id="create-form">
+          <label>
+            User id
+            <input name="userId" value="user-1" required />
+          </label>
+          <p class="hint">
+            Status changes from the form on the right. A product id ending in
+            <code>-oos</code> makes the separate Inventory app refuse the
+            reservation. A user id ending in <code>-pay-fail</code> is only a
+            payment rule in unit tests.
+          </p>
+          <div id="items"></div>
+          <button type="button" class="ghost" id="add-item">Add item</button>
+          <button type="submit">Create order</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Look up an order</h2>
+        <form id="lookup-form" class="row">
+          <label class="grow">
+            Order id
+            <input name="orderId" id="order-id" placeholder="order-…" required />
+          </label>
+          <button type="submit">Load</button>
+        </form>
+        <div id="order-empty" class="empty">No order loaded yet.</div>
+        <div id="order-view" hidden>
+          <dl class="facts" id="order-facts"></dl>
+          <h3>Items</h3>
+          <ul id="order-items" class="items"></ul>
+          <form id="status-form">
+            <label>
+              Status
+              <select name="status" id="status"></select>
+            </label>
+            <label>
+              ETag
+              <input name="etag" id="etag" required />
+            </label>
+            <div class="actions">
+              <button type="submit">Update status</button>
+              <button type="button" class="ghost" id="reminder">
+                Schedule reminder
+              </button>
+            </div>
+          </form>
+          <p class="hint" id="reminder-result"></p>
+        </div>
+      </section>
+    </main>
+
+    <section class="split">
+      <article class="card">
+        <div class="section-head">
+          <h2>Metrics</h2>
+          <button type="button" class="ghost" id="refresh-metrics">Refresh</button>
+        </div>
+        <pre id="metrics">—</pre>
+      </article>
+      <article class="card">
+        <div class="section-head">
+          <h2>Dead letters</h2>
+          <button type="button" class="ghost" id="refresh-dlq">Peek</button>
+        </div>
+        <pre id="dlq">Peek to read up to 20 messages. This does not replay them.</pre>
+      </article>
+    </section>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
